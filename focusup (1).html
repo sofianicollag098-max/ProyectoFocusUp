@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FocusUP — Bienestar y Rendimiento Académico</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --bg:#0f0f1a;
+  --bg2:#16162a;
+  --bg3:#1e1e35;
+  --card:#1e1e35;
+  --card2:#252540;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.12);
+  --txt:#e8e6f0;
+  --txt2:#9694b0;
+  --txt3:#5e5c78;
+  --indigo:#6366f1;
+  --indigo2:#4f46e5;
+  --indigo3:#3730a3;
+  --violet:#8b5cf6;
+  --violet2:#7c3aed;
+  --pink:#ec4899;
+  --cyan:#06b6d4;
+  --emerald:#10b981;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --r:12px; --r2:8px; --r3:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;overflow-x:hidden;}
+
+/* scrollbar */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:10px;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:248px;min-width:248px;background:var(--bg2);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:100;
+  border-right:1px solid var(--border);
+}
+.sidebar-logo{padding:24px 20px 18px;border-bottom:1px solid var(--border);}
+.logo-mark{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;background:linear-gradient(135deg,var(--indigo),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.5px;}
+.logo-sub{font-size:10.5px;color:var(--txt3);margin-top:2px;font-weight:400;letter-spacing:0.3px;}
+
+.user-card{padding:14px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--violet));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:white;flex-shrink:0;}
+.user-name{font-size:13px;font-weight:600;color:var(--txt);}
+.user-role{font-size:10.5px;color:var(--txt3);margin-top:1px;}
+
+.nav{padding:10px 10px;flex:1;overflow-y:auto;}
+.nav-section-label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--txt3);padding:12px 10px 5px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--r2);cursor:pointer;font-size:13px;color:var(--txt2);transition:all 0.15s;font-weight:500;margin-bottom:1px;border:none;background:none;width:100%;text-align:left;position:relative;}
+.nav-item:hover{background:rgba(255,255,255,0.05);color:var(--txt);}
+.nav-item.active{background:rgba(99,102,241,0.18);color:var(--indigo);}
+.nav-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;background:linear-gradient(var(--indigo),var(--violet));border-radius:0 3px 3px 0;}
+.nav-icon{font-size:16px;flex-shrink:0;}
+.notif-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--violet);color:white;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;margin-left:auto;}
+.sidebar-footer{padding:14px 20px;border-top:1px solid var(--border);font-size:10px;color:var(--txt3);text-align:center;line-height:1.6;}
+
+/* ── MAIN ── */
+.main{margin-left:248px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar-title{font-size:15px;font-weight:600;color:var(--txt);}
+.topbar-date{font-size:12px;color:var(--txt3);}
+.topbar-actions{display:flex;gap:8px;align-items:center;}
+
+/* buttons */
+.btn{padding:7px 15px;border-radius:var(--r2);font-size:12.5px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:'Plus Jakarta Sans',sans-serif;border:1px solid transparent;}
+.btn-primary{background:linear-gradient(135deg,var(--indigo),var(--violet2));color:white;border:none;box-shadow:0 4px 14px rgba(99,102,241,0.3);}
+.btn-primary:hover{opacity:0.9;transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--txt2);border:1px solid var(--border2);}
+.btn-ghost:hover{background:rgba(255,255,255,0.05);color:var(--txt);}
+
+.content{padding:24px 28px;flex:1;}
+.page{display:none;animation:fadeIn 0.22s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* stats */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.stat-card{background:var(--card);border-radius:var(--r);padding:16px 18px;border:1px solid var(--border);transition:border-color 0.2s;}
+.stat-card:hover{border-color:var(--border2);}
+.stat-label{font-size:11px;color:var(--txt3);font-weight:600;letter-spacing:0.3px;margin-bottom:6px;text-transform:uppercase;}
+.stat-value{font-size:26px;font-weight:700;color:var(--txt);line-height:1;}
+.stat-sub{font-size:11px;color:var(--txt3);margin-top:4px;}
+.stat-accent{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;}
+
+/* cards */
+.card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;transition:border-color 0.2s;}
+.card:hover{border-color:var(--border2);}
+.card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:13px;font-weight:700;color:var(--txt);letter-spacing:0.1px;}
+.card-body{padding:18px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+
+/* tasks */
+.task-item{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:all 0.1s;}
+.task-item:last-child{border-bottom:none;}
+.task-item:hover{opacity:0.85;}
+.task-check{width:19px;height:19px;border-radius:5px;border:1.5px solid var(--txt3);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s;cursor:pointer;}
+.task-check.done{background:linear-gradient(135deg,var(--emerald),#059669);border-color:transparent;}
+.task-check.done::after{content:'✓';color:white;font-size:10px;font-weight:800;}
+.task-info{flex:1;min-width:0;}
+.task-name{font-size:13px;font-weight:500;color:var(--txt);}
+.task-name.done{text-decoration:line-through;color:var(--txt3);}
+.task-meta{font-size:10.5px;color:var(--txt3);margin-top:2px;}
+
+/* tags */
+.tag{padding:3px 8px;border-radius:20px;font-size:10.5px;font-weight:600;}
+.tag-indigo{background:rgba(99,102,241,0.15);color:#a5b4fc;}
+.tag-violet{background:rgba(139,92,246,0.15);color:#c4b5fd;}
+.tag-amber{background:rgba(245,158,11,0.15);color:#fcd34d;}
+.tag-coral{background:rgba(239,68,68,0.15);color:#fca5a5;}
+.tag-cyan{background:rgba(6,182,212,0.15);color:#67e8f9;}
+.tag-emerald{background:rgba(16,185,129,0.15);color:#6ee7b7;}
+.tag-pink{background:rgba(236,72,153,0.15);color:#f9a8d4;}
+
+/* progress */
+.progress-bar-wrap{background:rgba(255,255,255,0.06);border-radius:10px;height:6px;overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:10px;transition:width 0.6s ease;}
+
+/* meta */
+.meta-item{padding:13px 0;border-bottom:1px solid var(--border);}
+.meta-item:last-child{border-bottom:none;}
+.meta-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px;}
+.meta-name{font-size:13.5px;font-weight:600;color:var(--txt);}
+.meta-pct{font-size:13px;font-weight:700;color:var(--indigo);}
+.meta-desc{font-size:11.5px;color:var(--txt3);margin-bottom:7px;}
+
+/* emociones */
+.emo-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:14px;}
+.emo-btn{padding:10px 4px;border-radius:var(--r2);border:1px solid var(--border2);background:var(--card2);cursor:pointer;text-align:center;transition:all 0.15s;font-family:'Plus Jakarta Sans',sans-serif;}
+.emo-btn:hover{border-color:var(--indigo);background:rgba(99,102,241,0.1);}
+.emo-btn.selected{border-color:var(--indigo);background:rgba(99,102,241,0.18);box-shadow:0 0 0 2px rgba(99,102,241,0.3);}
+.emo-icon{font-size:22px;display:block;margin-bottom:4px;}
+.emo-label{font-size:10px;color:var(--txt2);font-weight:600;}
+.stress-slider{width:100%;margin:8px 0;accent-color:var(--indigo);}
+
+/* recs */
+.rec-card{background:var(--card2);border-radius:var(--r2);border:1px solid var(--border);padding:13px 15px;margin-bottom:9px;display:flex;gap:12px;align-items:flex-start;transition:border-color 0.2s;}
+.rec-card:hover{border-color:var(--border2);}
+.rec-icon-wrap{width:36px;height:36px;border-radius:var(--r2);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.rec-title{font-size:13px;font-weight:700;color:var(--txt);margin-bottom:3px;}
+.rec-desc{font-size:12px;color:var(--txt2);line-height:1.55;}
+
+/* modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:1000;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r3);width:480px;max-width:95vw;padding:26px;box-shadow:0 25px 60px rgba(0,0,0,0.5);animation:modalIn 0.2s ease;}
+@keyframes modalIn{from{transform:scale(0.95) translateY(10px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:18px;color:var(--txt);}
+.form-group{margin-bottom:13px;}
+.form-label{font-size:11px;font-weight:700;color:var(--txt3);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:0.4px;}
+.form-input,.form-select{width:100%;padding:9px 12px;border:1px solid var(--border2);border-radius:var(--r2);font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--txt);background:var(--bg3);outline:none;transition:border-color 0.15s;}
+.form-input:focus,.form-select:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(99,102,241,0.15);}
+.form-input::placeholder{color:var(--txt3);}
+.form-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%236b6b8f' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;}
+textarea.form-input{resize:vertical;min-height:65px;}
+
+/* welcome banner */
+.welcome-banner{border-radius:var(--r3);padding:22px 26px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;background:linear-gradient(135deg,#1a1a3e 0%,#2d1b69 50%,#1e1e35 100%);border:1px solid rgba(99,102,241,0.3);}
+.welcome-banner::before{content:'';position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,0.12) 0%,transparent 70%);}
+.welcome-banner::after{content:'';position:absolute;left:40%;bottom:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,0.08) 0%,transparent 70%);}
+.welcome-text h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:white;margin-bottom:4px;}
+.welcome-text p{font-size:12.5px;color:rgba(255,255,255,0.55);}
+.welcome-quote{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r);padding:12px 15px;max-width:230px;text-align:right;position:relative;z-index:1;}
+.welcome-quote p{font-size:11.5px;color:rgba(255,255,255,0.65);font-style:italic;line-height:1.5;}
+.welcome-quote span{font-size:10px;color:rgba(255,255,255,0.35);display:block;margin-top:4px;}
+
+/* profile */
+.avatar-lg{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--violet));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:24px;color:white;font-family:'Syne',sans-serif;}
+.semestre-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
+.chip{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(255,255,255,0.06);color:var(--txt2);border:1px solid var(--border2);}
+
+/* emo log */
+.emo-log-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.emo-log-item:last-child{border-bottom:none;}
+.emo-date{font-size:10.5px;color:var(--txt3);min-width:78px;}
+
+.section-title{font-size:11px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;margin-top:2px;}
+.empty-state{text-align:center;padding:30px;color:var(--txt3);font-size:13px;}
+.empty-icon{font-size:30px;margin-bottom:8px;opacity:0.35;}
+
+/* wellbeing cards */
+.wbcard{border-radius:var(--r);padding:14px;border:1px solid var(--border);}
+
+
+/* ═══════ AUTH ═══════ */
+#authScreen { display:flex; min-height:100vh; }
+#authScreen .left {
+  flex:1; display:flex; align-items:center; justify-content:center; padding:48px 40px;
+  background:linear-gradient(135deg,rgba(99,102,241,.07),rgba(139,92,246,.04));
+  border-right:1px solid var(--border);
+}
+#authScreen .right {
+  width:460px; min-width:460px; display:flex; align-items:center; justify-content:center; padding:40px;
+}
+.a-logo { font-family:'Syne',sans-serif; font-size:36px; font-weight:800;
+  background:linear-gradient(135deg,var(--indigo),var(--violet));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.a-tag  { font-size:13px; color:var(--txt3); margin-bottom:34px; }
+.a-h    { font-family:'Syne',sans-serif; font-size:26px; font-weight:700; color:var(--txt); line-height:1.3; margin-bottom:10px; }
+.a-p    { font-size:13px; color:var(--txt2); line-height:1.7; margin-bottom:26px; }
+.a-feats{ display:flex; flex-direction:column; gap:13px; }
+.a-feat { display:flex; gap:11px; align-items:flex-start; }
+.a-fic  { width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.a-ft strong { font-size:13px; font-weight:700; color:var(--txt); display:block; margin-bottom:1px; }
+.a-ft span   { font-size:11.5px; color:var(--txt3); }
+
+.a-card { width:100%; max-width:380px; }
+.a-tabs { display:flex; gap:4px; background:var(--bg3); border-radius:var(--r2); padding:4px; margin-bottom:26px; border:1px solid var(--border); }
+.a-tab  { flex:1; padding:9px; text-align:center; font-size:13px; font-weight:600; cursor:pointer; border-radius:6px;
+          color:var(--txt3); border:none; background:none; font-family:'Plus Jakarta Sans',sans-serif; transition:all .2s; }
+.a-tab.on { background:linear-gradient(135deg,var(--indigo),var(--violet2)); color:#fff; box-shadow:0 4px 12px rgba(99,102,241,.35); }
+.a-title  { font-family:'Syne',sans-serif; font-size:22px; font-weight:700; color:var(--txt); margin-bottom:6px; }
+.a-sub    { font-size:12.5px; color:var(--txt3); margin-bottom:22px; }
+
+.a-msg { padding:10px 14px; border-radius:var(--r2); font-size:12.5px; margin-bottom:14px; display:none; gap:8px; align-items:center; }
+.a-msg.show { display:flex; }
+.a-msg.err  { background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.3); color:#fca5a5; }
+.a-msg.ok   { background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.3); color:#6ee7b7; }
+
+.f-wrap { position:relative; }
+.f-wrap .form-input { padding-left:40px; }
+.f-ico  { position:absolute; left:13px; top:50%; transform:translateY(-50%); font-size:15px; color:var(--txt3); pointer-events:none; }
+
+.hint     { font-size:11px; color:var(--txt3); margin-top:4px; }
+.hint.ok  { color:var(--emerald); }
+.hint.err { color:var(--red); }
+
+.pw-bars { display:flex; gap:4px; margin-top:7px; }
+.pw-bar  { flex:1; height:3px; border-radius:3px; background:var(--border); transition:background .3s; }
+.pw-lbl  { font-size:10.5px; margin-top:4px; font-weight:600; color:var(--txt3); }
+
+.chk { display:flex; align-items:flex-start; gap:9px; margin:10px 0; }
+.chk input { width:16px; height:16px; accent-color:var(--indigo); flex-shrink:0; margin-top:1px; cursor:pointer; }
+.chk label { font-size:12px; color:var(--txt2); cursor:pointer; line-height:1.5; }
+.chk a     { color:var(--indigo); text-decoration:none; }
+
+.btn-auth { width:100%; padding:12px; border-radius:var(--r2); font-size:14px; font-weight:700; cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif; border:none;
+  background:linear-gradient(135deg,var(--indigo),var(--violet2)); color:#fff;
+  box-shadow:0 6px 20px rgba(99,102,241,.35); margin-top:4px; transition:all .15s; }
+.btn-auth:hover    { opacity:.9; transform:translateY(-1px); }
+.btn-auth:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+
+.a-link { text-align:center; margin-top:14px; font-size:12px; color:var(--txt3); }
+.a-link a { color:var(--indigo); text-decoration:none; font-weight:600; }
+
+/* botón logout en sidebar */
+.btn-logout { width:calc(100% - 24px); margin:0 12px 10px; padding:8px; border-radius:var(--r2);
+  font-size:12px; font-weight:600; cursor:pointer;
+  background:rgba(239,68,68,.1); color:#fca5a5; border:1px solid rgba(239,68,68,.2);
+  font-family:'Plus Jakarta Sans',sans-serif; transition:all .15s; }
+.btn-logout:hover { background:rgba(239,68,68,.2); }
+
+/* toast */
+#toast { position:fixed; bottom:24px; right:24px; z-index:9999;
+  background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r);
+  padding:12px 18px; font-size:13px; color:var(--txt);
+  box-shadow:0 8px 30px rgba(0,0,0,.4);
+  transform:translateY(80px); opacity:0; transition:all .3s ease; pointer-events:none; max-width:320px; }
+#toast.show { transform:translateY(0); opacity:1; }
+
+/* APP oculta hasta login */
+#app { display:none; }
+
+@media(max-width:760px){ #authScreen .left{ display:none; } #authScreen .right{ width:100%; min-width:0; } }
+
+</style>
+</head>
+<body>
+
+<!-- ═══════ PANTALLA DE INICIO DE SESIÓN ═══════ -->
+<div id="authScreen">
+
+  <!-- Columna izquierda: branding -->
+  <div class="left">
+    <div>
+      <div class="a-logo">FocusUP</div>
+      <div class="a-tag">Bienestar &amp; Rendimiento Académico</div>
+      <div class="a-h">Tu plataforma de bienestar académico 🚀</div>
+      <div class="a-p">Organiza tus tareas, registra cómo te sientes y sigue tus metas — todo en un solo lugar, personalizado por ti.</div>
+      <div class="a-feats">
+        <div class="a-feat"><div class="a-fic" style="background:rgba(99,102,241,.12)">📋</div><div class="a-ft"><strong>Tareas por materia</strong><span>Tú decides qué materias agregas</span></div></div>
+        <div class="a-feat"><div class="a-fic" style="background:rgba(139,92,246,.12)">💜</div><div class="a-ft"><strong>Bienestar emocional</strong><span>Monitorea tu estrés académico</span></div></div>
+        <div class="a-feat"><div class="a-fic" style="background:rgba(16,185,129,.12)">🎯</div><div class="a-ft"><strong>Metas académicas</strong><span>Define y sigue tus objetivos</span></div></div>
+        <div class="a-feat"><div class="a-fic" style="background:rgba(245,158,11,.12)">📈</div><div class="a-ft"><strong>Progreso personal</strong><span>Estadísticas de tu avance</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Columna derecha: formularios -->
+  <div class="right">
+    <div class="a-card">
+
+      <!-- Tabs -->
+      <div class="a-tabs">
+        <button class="a-tab on" id="tA" onclick="swTab('login')">Iniciar sesión</button>
+        <button class="a-tab"    id="tB" onclick="swTab('reg')">Registrarse</button>
+      </div>
+
+      <!-- ── FORMULARIO LOGIN ── -->
+      <div id="fLogin">
+        <div class="a-title">¡Bienvenido de nuevo!</div>
+        <div class="a-sub">Ingresa con el correo con el que te registraste</div>
+        <div id="msgL" class="a-msg"></div>
+        <div class="form-group">
+          <label class="form-label">Correo electrónico</label>
+          <div class="f-wrap"><span class="f-ico">✉️</span>
+            <input type="email" class="form-input" id="lMail" placeholder="tucorreo@correo.com">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <div class="f-wrap"><span class="f-ico">🔒</span>
+            <input type="password" class="form-input" id="lPass" placeholder="Tu contraseña"
+              onkeydown="if(event.key==='Enter')doLogin()">
+          </div>
+        </div>
+        <button class="btn-auth" id="btnLogin" onclick="doLogin()">Entrar a FocusUP →</button>
+        <div class="a-link">¿No tienes cuenta? <a href="#" onclick="swTab('reg');return false">Regístrate aquí</a></div>
+      </div>
+
+      <!-- ── FORMULARIO REGISTRO ── -->
+      <div id="fReg" style="display:none">
+        <div class="a-title">Crear cuenta</div>
+        <div class="a-sub">Ingresa tus datos — tú decides tu carrera y semestre</div>
+        <div id="msgR" class="a-msg"></div>
+
+        <div class="form-group">
+          <label class="form-label">Nombre completo</label>
+          <div class="f-wrap"><span class="f-ico">👤</span>
+            <input type="text" class="form-input" id="rNom" placeholder="Ej: Juan Pérez García">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Correo electrónico</label>
+          <div class="f-wrap"><span class="f-ico">✉️</span>
+            <input type="email" class="form-input" id="rMail" placeholder="tucorreo@correo.com" oninput="chkMail()">
+          </div>
+          <div class="hint" id="hMail"></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Carrera / Programa</label>
+            <input type="text" class="form-input" id="rCarrera" placeholder="Ej: Ing. Sistemas">
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Semestre</label>
+            <input type="text" class="form-input" id="rSem" placeholder="Ej: 4">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top:14px">
+          <label class="form-label">Jornada</label>
+          <select class="form-select" id="rJorn">
+            <option value="">Selecciona tu jornada</option>
+            <option>Diurna</option>
+            <option>Nocturna</option>
+            <option>Mixta</option>
+            <option>Virtual</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Materias que ves actualmente <span style="color:var(--txt3);font-weight:400">(separadas por coma)</span></label>
+          <input type="text" class="form-input" id="rMaterias"
+            placeholder="Ej: Cálculo, POO, Bases de Datos, Inglés">
+          <div class="hint">Las materias aparecerán como opciones al crear tareas</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <div class="f-wrap"><span class="f-ico">🔒</span>
+            <input type="password" class="form-input" id="rPass" placeholder="Mínimo 6 caracteres" oninput="chkPwd()">
+          </div>
+          <div class="pw-bars"><div class="pw-bar" id="pb1"></div><div class="pw-bar" id="pb2"></div><div class="pw-bar" id="pb3"></div><div class="pw-bar" id="pb4"></div></div>
+          <div class="pw-lbl" id="pwLbl">Ingresa una contraseña</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Confirmar contraseña</label>
+          <div class="f-wrap"><span class="f-ico">🔒</span>
+            <input type="password" class="form-input" id="rPass2" placeholder="Repite tu contraseña"
+              onkeydown="if(event.key==='Enter')doRegister()">
+          </div>
+        </div>
+
+        <div class="chk">
+          <input type="checkbox" id="rTerms">
+          <label for="rTerms">Acepto los <a href="#" onclick="return false">términos de uso</a> de FocusUP</label>
+        </div>
+
+        <button class="btn-auth" id="btnReg" onclick="doRegister()">Crear mi cuenta →</button>
+        <div class="a-link">¿Ya tienes cuenta? <a href="#" onclick="swTab('login');return false">Inicia sesión</a></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ APP PRINCIPAL ═══════ -->
+<div id="app">
+
+
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">FocusUP</div>
+    <div class="logo-sub">Bienestar &amp; Rendimiento Académico</div>
+  </div>
+  <div class="user-card">
+    <div class="avatar" id="sidebarAvatar">?</div>
+    <div>
+      <div class="user-name" id="sidebarName">Usuario</div>
+      <div class="user-role" id="sidebarRole">Estudiante</div>
+    </div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section-label">Principal</div>
+    <button class="nav-item active" onclick="showPage('inicio',this)"><span class="nav-icon">🏠</span>Inicio</button>
+    <button class="nav-item" onclick="showPage('tareas',this)"><span class="nav-icon">📋</span>Mis Tareas<span class="notif-badge" id="tareasBadge" style="display:none;">0</span></button>
+    <button class="nav-item" onclick="showPage('metas',this)"><span class="nav-icon">🎯</span>Metas Académicas</button>
+    <button class="nav-item" onclick="showPage('emocional',this)"><span class="nav-icon">💜</span>Bienestar Emocional</button>
+    <button class="nav-item" onclick="showPage('recomendaciones',this)"><span class="nav-icon">💡</span>Recomendaciones</button>
+    <div class="nav-section-label" style="margin-top:6px;">Personal</div>
+    <button class="nav-item" onclick="showPage('progreso',this)"><span class="nav-icon">📈</span>Mi Progreso</button>
+    <button class="nav-item" onclick="showPage('perfil',this)"><span class="nav-icon">👤</span>Perfil</button>
+  </nav>
+  <button class="btn-logout" onclick="doLogout()">🚪 Cerrar sesión</button>
+  <div class="sidebar-footer">ETITC · Instituto Técnico Central<br>Bogotá, Colombia · 2026</div>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-title" id="topbarTitle">Panel Principal</div>
+    <div class="topbar-date" id="topbarDate"></div>
+    <div class="topbar-actions">
+      <button class="btn btn-primary" id="topbarAction" onclick="handleTopAction()">+ Nueva Tarea</button>
+    </div>
+  </header>
+  <div class="content">
+
+    <!-- INICIO -->
+    <div class="page active" id="page-inicio">
+      <div class="welcome-banner">
+        <div class="welcome-text">
+          <h2 id="welcomeMsg">¡Buen día! 👋</h2>
+          <p>Tienes <strong id="tareasPend" style="color:#a5b4fc;">0 tareas</strong> pendientes. ¡Tú puedes!</p>
+        </div>
+        <div class="welcome-quote">
+          <p>"El bienestar psicológico y la motivación positiva influyen directamente en el desempeño académico."</p>
+          <span>— Seligman, Flourish (2011)</span>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Tareas completadas</div><div class="stat-value" id="statDone" style="color:var(--emerald);">0</div><div class="stat-sub">Esta semana</div></div>
+        <div class="stat-card"><div class="stat-label">Metas activas</div><div class="stat-value" id="statMetas" style="color:var(--indigo);">0</div><div class="stat-sub">En curso</div></div>
+        <div class="stat-card"><div class="stat-label">Nivel de estrés</div><div class="stat-value" id="statStress" style="font-size:20px;">—</div><div class="stat-sub">Último registro</div></div>
+        <div class="stat-card"><div class="stat-label">Estado emocional</div><div class="stat-value" id="statEmo" style="font-size:26px;">😊</div><div class="stat-sub">Último registro</div></div>
+      </div>
+      <div class="grid-2" style="margin-bottom:14px;">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Tareas próximas</div><button class="btn btn-ghost" style="font-size:11px;padding:4px 10px;" onclick="showPage('tareas',document.querySelectorAll('.nav-item')[1])">Ver todas</button></div>
+          <div class="card-body" id="homeTaskList" style="padding:8px 18px;"><div class="empty-state"><div class="empty-icon">📭</div>Sin tareas aún.</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Progreso de metas</div><button class="btn btn-ghost" style="font-size:11px;padding:4px 10px;" onclick="showPage('metas',document.querySelectorAll('.nav-item')[2])">Ver todas</button></div>
+          <div class="card-body" id="homeMetaList" style="padding:8px 18px;"><div class="empty-state"><div class="empty-icon">🎯</div>Sin metas definidas aún.</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Historial emocional — últimos registros</div></div>
+        <div class="card-body" id="homeEmoChart"><div style="color:var(--txt3);font-size:12.5px;text-align:center;padding:14px;">Registra tu estado emocional en Bienestar Emocional para ver el historial.</div></div>
+      </div>
+    </div>
+
+    <!-- TAREAS -->
+    <div class="page" id="page-tareas">
+      <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;">
+        <button class="btn btn-primary" id="filtroTodas" onclick="filtrarTareas('todas')" style="font-size:11.5px;padding:6px 13px;">Todas</button>
+        <button class="btn btn-ghost" id="filtroPend" onclick="filtrarTareas('pendiente')" style="font-size:11.5px;padding:6px 13px;">Pendientes</button>
+        <button class="btn btn-ghost" id="filtroComp" onclick="filtrarTareas('completada')" style="font-size:11.5px;padding:6px 13px;">Completadas</button>
+        <button class="btn btn-ghost" id="filtroAlta" onclick="filtrarTareas('alta')" style="font-size:11.5px;padding:6px 13px;">Alta prioridad</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Lista de tareas</div><span id="tareaCount" style="font-size:11.5px;color:var(--txt3);">0 tareas</span></div>
+        <div class="card-body" id="tareaList" style="padding:8px 18px;"><div class="empty-state"><div class="empty-icon">✅</div>Sin tareas. ¡Crea tu primera tarea!</div></div>
+      </div>
+    </div>
+
+    <!-- METAS -->
+    <div class="page" id="page-metas">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Metas académicas</div><button class="btn btn-primary" style="font-size:11.5px;padding:6px 13px;" onclick="openModal('meta')">+ Nueva Meta</button></div>
+        <div class="card-body" id="metaList" style="padding:8px 18px;"><div class="empty-state"><div class="empty-icon">🎯</div>Sin metas. ¡Define una!</div></div>
+      </div>
+    </div>
+
+    <!-- BIENESTAR -->
+    <div class="page" id="page-emocional">
+      <div class="grid-2" style="margin-bottom:14px;">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Registro de hoy</div></div>
+          <div class="card-body">
+            <div class="section-title">¿Cómo te sientes ahora?</div>
+            <div class="emo-grid">
+              <button class="emo-btn" onclick="selectEmo(this,'Muy bien','😄',5)" data-val="5"><span class="emo-icon">😄</span><span class="emo-label">Muy bien</span></button>
+              <button class="emo-btn" onclick="selectEmo(this,'Bien','🙂',4)" data-val="4"><span class="emo-icon">🙂</span><span class="emo-label">Bien</span></button>
+              <button class="emo-btn" onclick="selectEmo(this,'Regular','😐',3)" data-val="3"><span class="emo-icon">😐</span><span class="emo-label">Regular</span></button>
+              <button class="emo-btn" onclick="selectEmo(this,'Estresado','😟',2)" data-val="2"><span class="emo-icon">😟</span><span class="emo-label">Estresado</span></button>
+              <button class="emo-btn" onclick="selectEmo(this,'Agotado','😩',1)" data-val="1"><span class="emo-icon">😩</span><span class="emo-label">Agotado</span></button>
+            </div>
+            <div class="section-title" style="margin-top:14px;">Nivel de estrés académico</div>
+            <input type="range" class="stress-slider" min="1" max="10" value="5" id="stressSlider" oninput="updateStressLabel()">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--txt3);margin-top:1px;">
+              <span>Tranquilo</span><span id="stressVal" style="font-weight:700;color:var(--txt);">5/10</span><span>Muy estresado</span>
+            </div>
+            <div class="section-title" style="margin-top:14px;">Nota (opcional)</div>
+            <textarea class="form-input" id="emoNota" placeholder="¿Qué está afectando tu estado hoy?" rows="3"></textarea>
+            <button class="btn btn-primary" style="width:100%;margin-top:12px;padding:10px;" onclick="guardarEmocion()">Guardar registro</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Historial emocional</div></div>
+          <div class="card-body" id="emoHistorial" style="padding:8px 18px;max-height:360px;overflow-y:auto;"><div class="empty-state"><div class="empty-icon">💜</div>Aún sin registros.</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Estrategias de bienestar — modelo PERMA</div></div>
+        <div class="card-body">
+          <div class="grid-3">
+            <div class="wbcard" style="background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.2);">
+              <div style="font-size:20px;margin-bottom:7px;">🧘</div>
+              <div style="font-size:13px;font-weight:700;color:#a5b4fc;margin-bottom:4px;">Técnica Pomodoro</div>
+              <div style="font-size:12px;color:var(--txt2);line-height:1.5;">25 min de estudio + 5 min de descanso. Ideal para Algoritmos y POO.</div>
+            </div>
+            <div class="wbcard" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.2);">
+              <div style="font-size:20px;margin-bottom:7px;">🌬️</div>
+              <div style="font-size:13px;font-weight:700;color:#c4b5fd;margin-bottom:4px;">Respiración 4-7-8</div>
+              <div style="font-size:12px;color:var(--txt2);line-height:1.5;">Inhala 4 seg, sostén 7 seg, exhala 8 seg. Reduce ansiedad antes de parciales.</div>
+            </div>
+            <div class="wbcard" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2);">
+              <div style="font-size:20px;margin-bottom:7px;">📓</div>
+              <div style="font-size:13px;font-weight:700;color:#fcd34d;margin-bottom:4px;">Journaling académico</div>
+              <div style="font-size:12px;color:var(--txt2);line-height:1.5;">Escribe 3 logros del día, por pequeños que sean, para fortalecer la motivación.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECOMENDACIONES -->
+    <div class="page" id="page-recomendaciones">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Recomendaciones personalizadas — Ing. Sistemas</div></div>
+        <div class="card-body">
+          <p style="font-size:12.5px;color:var(--txt3);margin-bottom:14px;">Basadas en tu perfil como estudiante de Ingeniería en Sistemas y los antecedentes teóricos de FocusUP.</p>
+          <div class="rec-card"><div class="rec-icon-wrap" style="background:rgba(99,102,241,0.12);">🕒</div><div><div class="rec-title">Gestión del tiempo — Método GTD</div><div class="rec-desc">Clasifica tareas por contexto: @laboratorio, @casa, @estudio. Para estudiantes de Sistemas la carga es alta; separar contextos reduce la ansiedad por multitarea.</div></div></div>
+          <div class="rec-card"><div class="rec-icon-wrap" style="background:rgba(139,92,246,0.12);">🐛</div><div><div class="rec-title">Depuración con descanso</div><div class="rec-desc">Si llevas más de 30 min sin resolver un bug, descansa 10 min. Tu mente procesa el problema inconscientemente — comprobado en neurociencia cognitiva.</div></div></div>
+          <div class="rec-card"><div class="rec-icon-wrap" style="background:rgba(245,158,11,0.12);">📚</div><div><div class="rec-title">Aprendizaje activo para POO y algoritmos</div><div class="rec-desc">Implementa cada concepto en un mini proyecto propio antes de ver la solución. Para Estructuras de Datos, crea tus propias listas y árboles desde cero.</div></div></div>
+          <div class="rec-card"><div class="rec-icon-wrap" style="background:rgba(6,182,212,0.12);">👥</div><div><div class="rec-title">Trabajo en equipo saludable</div><div class="rec-desc">Establece acuerdos de comunicación desde el inicio de cada proyecto: horarios, canales y roles claros. Reduce conflictos en la etapa de entrega.</div></div></div>
+          <div class="rec-card"><div class="rec-icon-wrap" style="background:rgba(239,68,68,0.12);">🌙</div><div><div class="rec-title">Higiene del sueño para programadores</div><div class="rec-desc">Dormir menos de 7 horas reduce la capacidad de resolución de problemas lógicos hasta un 40%. Evita programar después de medianoche.</div></div></div>
+          <div class="rec-card"><div class="rec-icon-wrap" style="background:rgba(16,185,129,0.12);">🎯</div><div><div class="rec-title">Modelo PERMA aplicado al estudio</div><div class="rec-desc">Según Seligman (2011): emociones positivas, compromiso, relaciones, significado y logros. Celebra cada entrega, mantén vínculos con compañeros y encuentra sentido en lo que estudias.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRESO -->
+    <div class="page" id="page-progreso">
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px;">
+        <div class="stat-card"><div class="stat-label">Tareas totales</div><div class="stat-value" id="progTotal">0</div><div class="stat-sub">Creadas en FocusUP</div></div>
+        <div class="stat-card"><div class="stat-label">Completadas</div><div class="stat-value" id="progComp" style="color:var(--emerald);">0</div><div class="stat-sub"><span id="progPct">0</span>% de avance</div></div>
+        <div class="stat-card"><div class="stat-label">Registros emocionales</div><div class="stat-value" id="progEmo" style="color:var(--violet);">0</div><div class="stat-sub">Seguimiento activo</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card"><div class="card-header"><div class="card-title">Avance por materia</div></div><div class="card-body" id="progMaterias"><div style="color:var(--txt3);font-size:12.5px;text-align:center;padding:12px;">Agrega tareas para ver el desglose.</div></div></div>
+        <div class="card"><div class="card-header"><div class="card-title">Estado emocional — últimos 7 días</div></div><div class="card-body" id="progEmoChart"><div style="color:var(--txt3);font-size:12.5px;text-align:center;padding:12px;">Registra tu estado emocional diariamente.</div></div></div>
+      </div>
+    </div>
+
+    <!-- PERFIL -->
+    <div class="page" id="page-perfil">
+      <div class="card" style="margin-bottom:14px;">
+        <div class="card-body">
+          <div style="display:flex;align-items:center;gap:18px;margin-bottom:20px;">
+            <div class="avatar-lg" id="profileAvatar">?</div>
+            <div>
+              <div style="font-size:19px;font-weight:700;color:var(--txt);" id="profileName">Estudiante</div>
+              <div style="font-size:12.5px;color:var(--txt3);margin-top:2px;" id="perfilCarreraLabel">Programa académico</div>
+              <div class="semestre-chips"><span class="chip" id="chipSemestre">Semestre</span><span class="chip">FocusUP</span><span class="chip" id="chipJornada">Jornada</span></div>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group"><label class="form-label">Nombre completo</label><input type="text" class="form-input" id="perfNombre" value="" oninput="updatePerfil()"></div>
+            <div class="form-group"><label class="form-label">Correo</label><input type="email" class="form-input" id="perfCorreo" value="" readonly style="opacity:0.6;cursor:not-allowed;"></div>
+            <div class="form-group"><label class="form-label">Semestre actual</label><select class="form-select" id="perfSemestre" onchange="updatePerfil()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div>
+            <div class="form-group"><label class="form-label">Jornada</label><select class="form-select" id="perfJornada" onchange="updatePerfil()"><option>Diurna</option><option>Nocturna</option><option>Mixta</option><option>Virtual</option></select></div>
+          </div>
+          <button class="btn btn-primary" onclick="savePerfil()">Guardar cambios</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title" id="perfilMateriasTitle">Mis materias</div></div>
+        <div class="card-body">
+          <div class="grid-3" id="perfilMaterias">
+            <div style="color:var(--txt3);font-size:12.5px;text-align:center;padding:12px;grid-column:1/-1;">Las materias que ingresaste al registrarte aparecerán aquí.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- MODAL TAREA -->
+<div class="modal-overlay" id="modalTarea">
+  <div class="modal">
+    <div class="modal-title">📋 Nueva Tarea</div>
+    <div class="form-group"><label class="form-label">Nombre de la tarea *</label><input type="text" class="form-input" id="tNombre" placeholder="Ej: Proyecto POO — diagrama UML"></div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Materia</label><select class="form-select" id="tMateria"><option value="POO">Prog. OO</option><option value="Estructuras">Estructuras</option><option value="Cálculo">Cálculo</option><option value="BD">Bases de Datos</option><option value="SO">Sist. Operativos</option><option value="Inglés">Inglés</option><option value="Otro">Otro</option></select></div>
+      <div class="form-group"><label class="form-label">Prioridad</label><select class="form-select" id="tPrioridad"><option value="alta">Alta</option><option value="media" selected>Media</option><option value="baja">Baja</option></select></div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Fecha límite</label><input type="date" class="form-input" id="tFecha"></div>
+      <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="tTipo"><option>Tarea</option><option>Proyecto</option><option>Parcial</option><option>Laboratorio</option><option>Exposición</option></select></div>
+    </div>
+    <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-input" id="tDesc" placeholder="Detalles..."></textarea></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modalTarea')">Cancelar</button><button class="btn btn-primary" onclick="crearTarea()">Crear tarea</button></div>
+  </div>
+</div>
+
+<!-- MODAL META -->
+<div class="modal-overlay" id="modalMeta">
+  <div class="modal">
+    <div class="modal-title">🎯 Nueva Meta Académica</div>
+    <div class="form-group"><label class="form-label">Nombre de la meta *</label><input type="text" class="form-input" id="mNombre" placeholder="Ej: Aprobar Cálculo con nota ≥ 4.0"></div>
+    <div class="form-group"><label class="form-label">Plan de acción</label><textarea class="form-input" id="mDesc" placeholder="¿Qué pasos seguirás para lograrlo?"></textarea></div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Progreso actual (%)</label><input type="number" class="form-input" id="mProgreso" min="0" max="100" value="0"></div>
+      <div class="form-group"><label class="form-label">Fecha objetivo</label><input type="date" class="form-input" id="mFecha"></div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modalMeta')">Cancelar</button><button class="btn btn-primary" onclick="crearMeta()">Crear meta</button></div>
+  </div>
+</div>
+
+<script>
+// Variables principales — inicializadas vacías, launchApp() las carga por usuario
+let tareas=[];
+let metas=[];
+let emociones=[];
+let selectedEmo={icon:'😊',label:'Bien',val:4};
+let currentPage='inicio';
+let filtroActual='todas';
+
+function setDate(){
+  const d=new Date();
+  const opts={weekday:'long',year:'numeric',month:'long',day:'numeric'};
+  document.getElementById('topbarDate').textContent=d.toLocaleDateString('es-CO',opts);
+  const h=d.getHours();
+  const name=(document.getElementById('perfNombre')?.value||'').split(' ')[0]||'estudiante';
+  const sal=h<12?'¡Buen día':h<18?'¡Buenas tardes':'¡Buenas noches';
+  document.getElementById('welcomeMsg').textContent=sal+', '+name+'! 👋';
+  const tom=new Date();tom.setDate(tom.getDate()+1);
+  document.getElementById('tFecha').valueAsDate=tom;
+  document.getElementById('mFecha').valueAsDate=new Date(d.getFullYear(),d.getMonth()+2,0);
+}
+
+const titles={inicio:'Panel Principal',tareas:'Mis Tareas',metas:'Metas Académicas',emocional:'Bienestar Emocional',recomendaciones:'Recomendaciones',progreso:'Mi Progreso',perfil:'Perfil de Estudiante'};
+const actions={inicio:'+ Nueva Tarea',tareas:'+ Nueva Tarea',metas:'+ Nueva Meta',emocional:'',recomendaciones:'',progreso:'',perfil:''};
+
+function showPage(name,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  document.getElementById('topbarTitle').textContent=titles[name]||name;
+  const ab=document.getElementById('topbarAction');
+  ab.textContent=actions[name]||'';
+  ab.style.display=actions[name]?'inline-block':'none';
+  currentPage=name;
+  renderAll();
+}
+
+function handleTopAction(){
+  if(currentPage==='metas')openModal('meta');
+  else openModal('tarea');
+}
+function openModal(t){document.getElementById(t==='meta'?'modalMeta':'modalTarea').classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
+
+const tagMap={alta:'tag-coral',media:'tag-amber',baja:'tag-emerald',POO:'tag-indigo',Estructuras:'tag-violet','Cálculo':'tag-amber','BD':'tag-cyan','SO':'tag-pink','Inglés':'tag-cyan','Otro':'tag-indigo'};
+
+function crearTarea(){
+  const n=document.getElementById('tNombre').value.trim();
+  if(!n){alert('El nombre es obligatorio.');return;}
+  tareas.push({id:Date.now(),nombre:n,materia:document.getElementById('tMateria').value,prioridad:document.getElementById('tPrioridad').value,fecha:document.getElementById('tFecha').value,tipo:document.getElementById('tTipo').value,desc:document.getElementById('tDesc').value,completada:false,creada:new Date().toISOString()});
+  save();closeModal('modalTarea');
+  document.getElementById('tNombre').value='';document.getElementById('tDesc').value='';
+  renderAll();
+}
+
+function toggleTarea(id){const t=tareas.find(t=>t.id===id);if(t){t.completada=!t.completada;save();renderAll();}}
+function borrarTarea(id){tareas=tareas.filter(t=>t.id!==id);save();renderAll();}
+
+function filtrarTareas(f){
+  filtroActual=f;
+  document.querySelectorAll('#page-tareas .btn').forEach(b=>{b.className='btn btn-ghost';b.style.cssText='font-size:11.5px;padding:6px 13px;';});
+  const map={todas:'filtroTodas',pendiente:'filtroPend',completada:'filtroComp',alta:'filtroAlta'};
+  const el=document.getElementById(map[f]);
+  if(el){el.className='btn btn-primary';el.style.cssText='font-size:11.5px;padding:6px 13px;';}
+  renderTareas();
+}
+
+function tareaHTML(t){
+  const f=t.fecha?new Date(t.fecha+'T00:00').toLocaleDateString('es-CO',{day:'numeric',month:'short'}):'';
+  return `<div class="task-item" onclick="toggleTarea(${t.id})">
+    <div class="task-check ${t.completada?'done':''}"></div>
+    <div class="task-info">
+      <div class="task-name ${t.completada?'done':''}">${t.nombre}</div>
+      <div class="task-meta">${t.tipo} · ${f?'Entrega: '+f:'Sin fecha'}</div>
+    </div>
+    <span class="tag ${tagMap[t.materia]||'tag-indigo'}">${t.materia}</span>
+    <span class="tag ${tagMap[t.prioridad]||'tag-amber'}">${t.prioridad}</span>
+    <button onclick="event.stopPropagation();borrarTarea(${t.id})" style="background:none;border:none;cursor:pointer;color:var(--txt3);font-size:15px;padding:3px;transition:color 0.15s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--txt3)'">✕</button>
+  </div>`;
+}
+
+function renderTareas(){
+  let lista=[...tareas];
+  if(filtroActual==='pendiente')lista=lista.filter(t=>!t.completada);
+  else if(filtroActual==='completada')lista=lista.filter(t=>t.completada);
+  else if(filtroActual==='alta')lista=lista.filter(t=>t.prioridad==='alta');
+  lista.sort((a,b)=>a.completada-b.completada||new Date(a.fecha)-new Date(b.fecha));
+  const el=document.getElementById('tareaList');
+  el.innerHTML=lista.length?lista.map(tareaHTML).join(''):'<div class="empty-state"><div class="empty-icon">✅</div>Sin tareas para este filtro.</div>';
+  document.getElementById('tareaCount').textContent=lista.length+' tarea'+(lista.length!==1?'s':'');
+  const pend=tareas.filter(t=>!t.completada).length;
+  const badge=document.getElementById('tareasBadge');
+  badge.textContent=pend;badge.style.display=pend>0?'inline-flex':'none';
+}
+
+const metaColors=['indigo','violet','amber','pink','cyan','emerald'];
+const metaGrad={indigo:'rgba(99,102,241,0.7)',violet:'rgba(139,92,246,0.7)',amber:'rgba(245,158,11,0.7)',pink:'rgba(236,72,153,0.7)',cyan:'rgba(6,182,212,0.7)',emerald:'rgba(16,185,129,0.7)'};
+
+function crearMeta(){
+  const n=document.getElementById('mNombre').value.trim();
+  if(!n){alert('El nombre es obligatorio.');return;}
+  metas.push({id:Date.now(),nombre:n,desc:document.getElementById('mDesc').value,progreso:Math.min(100,Math.max(0,parseInt(document.getElementById('mProgreso').value)||0)),fecha:document.getElementById('mFecha').value,creada:new Date().toISOString()});
+  save();closeModal('modalMeta');
+  document.getElementById('mNombre').value='';document.getElementById('mDesc').value='';document.getElementById('mProgreso').value=0;
+  renderAll();
+}
+
+function actualizarMeta(id,val){const m=metas.find(m=>m.id===id);if(m){m.progreso=Math.min(100,Math.max(0,parseInt(val)||0));save();renderAll();}}
+function borrarMeta(id){metas=metas.filter(m=>m.id!==id);save();renderAll();}
+
+function renderMetas(){
+  const el=document.getElementById('metaList');
+  if(!metas.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">🎯</div>Sin metas. ¡Define una!</div>';return;}
+  el.innerHTML=metas.map((m,i)=>{
+    const c=metaColors[i%metaColors.length];
+    const g=metaGrad[c];
+    const f=m.fecha?new Date(m.fecha+'T00:00').toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'}):'Sin fecha';
+    return `<div class="meta-item">
+      <div class="meta-header">
+        <div><div class="meta-name">${m.nombre}</div><div class="meta-desc">${m.desc||'Sin descripción'} · 📅 ${f}</div></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="meta-pct" style="color:${g};">${m.progreso}%</div>
+          <button onclick="borrarMeta(${m.id})" style="background:none;border:none;cursor:pointer;color:var(--txt3);font-size:14px;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--txt3)'">✕</button>
+        </div>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${m.progreso}%;background:${g};"></div></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+        <input type="range" min="0" max="100" value="${m.progreso}" style="flex:1;accent-color:${g};" oninput="actualizarMeta(${m.id},this.value)">
+        <span style="font-size:10.5px;color:var(--txt3);">Arrastra para actualizar</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectEmo(btn,label,icon,val){
+  document.querySelectorAll('.emo-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedEmo={icon,label,val};
+}
+function updateStressLabel(){document.getElementById('stressVal').textContent=document.getElementById('stressSlider').value+'/10';}
+
+function guardarEmocion(){
+  emociones.unshift({id:Date.now(),fecha:new Date().toISOString(),emo:selectedEmo,stress:parseInt(document.getElementById('stressSlider').value),nota:document.getElementById('emoNota').value.trim()});
+  if(emociones.length>30)emociones.pop();
+  save();document.getElementById('emoNota').value='';
+  renderAll();
+  showToast('✅ Registro guardado.');
+}
+
+function renderEmociones(){
+  const el=document.getElementById('emoHistorial');
+  if(!emociones.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">💜</div>Aún sin registros.</div>';return;}
+  el.innerHTML=emociones.slice(0,10).map(e=>{
+    const f=new Date(e.fecha).toLocaleDateString('es-CO',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    const sc=e.stress>=8?'var(--red)':e.stress>=5?'var(--amber)':'var(--emerald)';
+    return `<div class="emo-log-item">
+      <span style="font-size:20px;">${e.emo.icon}</span>
+      <div style="flex:1;"><div style="font-size:13px;font-weight:600;">${e.emo.label}</div>${e.nota?`<div style="font-size:11px;color:var(--txt3);margin-top:1px;">"${e.nota.slice(0,55)}${e.nota.length>55?'…':''}"</div>`:''}</div>
+      <div style="text-align:right;"><div style="font-size:11px;font-weight:700;color:${sc};">Estrés: ${e.stress}/10</div><div class="emo-date">${f}</div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderInicio(){
+  const pend=tareas.filter(t=>!t.completada).slice(0,5);
+  document.getElementById('homeTaskList').innerHTML=pend.length?pend.map(tareaHTML).join(''):'<div class="empty-state"><div class="empty-icon">📭</div>Sin tareas pendientes.</div>';
+  document.getElementById('homeMetaList').innerHTML=metas.length?metas.slice(0,4).map((m,i)=>{
+    const g=metaGrad[metaColors[i%metaColors.length]];
+    return `<div class="meta-item" style="padding:9px 0;"><div class="meta-header"><div class="meta-name">${m.nombre}</div><div class="meta-pct" style="color:${g};">${m.progreso}%</div></div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${m.progreso}%;background:${g};"></div></div></div>`;
+  }).join(''):'<div class="empty-state"><div class="empty-icon">🎯</div>Sin metas definidas.</div>';
+  document.getElementById('statDone').textContent=tareas.filter(t=>t.completada).length;
+  document.getElementById('statMetas').textContent=metas.length;
+  document.getElementById('tareasPend').textContent=tareas.filter(t=>!t.completada).length+' tarea'+(tareas.filter(t=>!t.completada).length!==1?'s':'');
+  if(emociones.length){
+    const l=emociones[0];
+    document.getElementById('statEmo').textContent=l.emo.icon;
+    document.getElementById('statStress').textContent=l.stress+'/10';
+    document.getElementById('statStress').style.color=l.stress>=8?'var(--red)':l.stress>=5?'var(--amber)':'var(--emerald)';
+  }
+  const ec=document.getElementById('homeEmoChart');
+  if(emociones.length){
+    const last=emociones.slice(0,7).reverse();
+    ec.innerHTML=`<div style="display:flex;align-items:flex-end;gap:8px;height:90px;padding:0 4px;">${last.map(e=>{
+      const h=Math.max(16,e.emo.val*14);
+      const c=e.stress>=8?'var(--red)':e.stress>=5?'var(--amber)':'var(--indigo)';
+      const f=new Date(e.fecha).toLocaleDateString('es-CO',{weekday:'short'});
+      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="font-size:14px;">${e.emo.icon}</div><div style="width:100%;height:${h}px;background:${c};border-radius:4px 4px 0 0;opacity:0.85;"></div><div style="font-size:10px;color:var(--txt3);">${f}</div></div>`;
+    }).join('')}</div>`;
+  }
+}
+
+function renderProgreso(){
+  document.getElementById('progTotal').textContent=tareas.length;
+  const comp=tareas.filter(t=>t.completada).length;
+  document.getElementById('progComp').textContent=comp;
+  document.getElementById('progPct').textContent=tareas.length?Math.round(comp/tareas.length*100):0;
+  document.getElementById('progEmo').textContent=emociones.length;
+  const byMat={};
+  tareas.forEach(t=>{if(!byMat[t.materia])byMat[t.materia]={total:0,done:0};byMat[t.materia].total++;if(t.completada)byMat[t.materia].done++;});
+  const me=document.getElementById('progMaterias');
+  const mats=Object.entries(byMat);
+  me.innerHTML=mats.length?mats.map(([mat,d],i)=>{
+    const g=metaGrad[metaColors[i%metaColors.length]];
+    const p=Math.round(d.done/d.total*100);
+    return `<div style="margin-bottom:11px;"><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:13px;font-weight:600;">${mat}</span><span style="font-size:11.5px;color:var(--txt3);">${d.done}/${d.total} · ${p}%</span></div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${p}%;background:${g};"></div></div></div>`;
+  }).join(''):'<div style="color:var(--txt3);font-size:12.5px;text-align:center;padding:12px;">Agrega tareas para ver el desglose.</div>';
+  const ee=document.getElementById('progEmoChart');
+  if(emociones.length>=2){
+    const last=emociones.slice(0,7).reverse();
+    ee.innerHTML=`<div style="display:flex;align-items:flex-end;gap:8px;height:120px;">${last.map(e=>{
+      const h=Math.max(10,e.emo.val*22);
+      const c=e.stress>=8?'var(--red)':e.stress>=5?'var(--amber)':'var(--indigo)';
+      const f=new Date(e.fecha).toLocaleDateString('es-CO',{weekday:'short'});
+      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="font-size:11px;color:var(--txt3);">${e.emo.val}/5</div><div style="width:100%;height:${h}px;background:${c};border-radius:4px 4px 0 0;opacity:0.8;"></div><div style="font-size:10px;color:var(--txt3);">${f}</div></div>`;
+    }).join('')}</div><div style="margin-top:9px;font-size:11px;color:var(--txt3);">Morado = bajo estrés · Ámbar = moderado · Rojo = alto estrés</div>`;
+  } else {ee.innerHTML='<div style="color:var(--txt3);font-size:12.5px;text-align:center;padding:12px;">Registra al menos 2 estados emocionales.</div>';}
+}
+
+function updatePerfil(){
+  const n=document.getElementById('perfNombre').value;
+  const s=document.getElementById('perfSemestre').value;
+  const j=document.getElementById('perfJornada').value;
+  document.getElementById('profileName').textContent=n;
+  document.getElementById('chipSemestre').textContent=s+'° Semestre';
+  document.getElementById('chipJornada').textContent=j;
+  const ini=n.split(' ').map(x=>x[0]||'').join('').toUpperCase().slice(0,2);
+  ['profileAvatar','sidebarAvatar'].forEach(id=>document.getElementById(id).textContent=ini);
+  document.getElementById('sidebarName').textContent=n;
+  document.getElementById('sidebarRole').textContent='Ing. Sistemas — '+s+'° Sem.';
+}
+
+function savePerfil(){
+  localStorage.setItem('fu_perfil',JSON.stringify({nombre:document.getElementById('perfNombre').value,correo:document.getElementById('perfCorreo').value,semestre:document.getElementById('perfSemestre').value,jornada:document.getElementById('perfJornada').value}));
+  alert('✅ Perfil actualizado correctamente.');
+}
+
+function loadPerfil(){
+  const p=JSON.parse(localStorage.getItem('fu_perfil')||'null');
+  if(p){document.getElementById('perfNombre').value=p.nombre;document.getElementById('perfCorreo').value=p.correo;document.getElementById('perfSemestre').value=p.semestre;document.getElementById('perfJornada').value=p.jornada;updatePerfil();}
+}
+
+function save(){if(!window.USER)return;localStorage.setItem(window.USER+'_t',JSON.stringify(tareas));localStorage.setItem(window.USER+'_m',JSON.stringify(metas));localStorage.setItem(window.USER+'_e',JSON.stringify(emociones));}
+function renderAll(){renderTareas();renderMetas();renderEmociones();renderInicio();renderProgreso();}
+
+// init manejado por launchApp
+</script>
+
+</div><!-- /app -->
+
+<div id="toast"></div>
+
+<script>
+/* ═══════ AUTH HELPERS ═══════ */
+function getDB(){try{return JSON.parse(localStorage.getItem('fu_db')||'{}')}catch(e){return {}}}
+function setDB(d){localStorage.setItem('fu_db',JSON.stringify(d))}
+function getSess(){try{return JSON.parse(localStorage.getItem('fu_sess')||'null')}catch(e){return null}}
+function setSess(u){if(u)localStorage.setItem('fu_sess',JSON.stringify(u));else localStorage.removeItem('fu_sess')}
+function enc(s){try{return btoa(unescape(encodeURIComponent(s)))}catch(e){return btoa(s)}}
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._tid);t._tid=setTimeout(()=>t.classList.remove('show'),3000);}
+function showMsg(id,msg,type){const el=document.getElementById(id);el.textContent=msg;el.className='a-msg '+type+' show';clearTimeout(el._tid);el._tid=setTimeout(()=>el.className='a-msg',7000);}
+
+/* ═══════ TABS ═══════ */
+function swTab(tab){
+  document.getElementById('fLogin').style.display=tab==='login'?'block':'none';
+  document.getElementById('fReg').style.display=tab==='reg'?'block':'none';
+  document.getElementById('tA').className='a-tab'+(tab==='login'?' on':'');
+  document.getElementById('tB').className='a-tab'+(tab==='reg'?' on':'');
+}
+
+/* ═══════ VALIDACIONES ═══════ */
+function chkMail(){
+  const v=document.getElementById('rMail').value;
+  const h=document.getElementById('hMail');
+  if(!v){h.textContent='';h.className='hint';return;}
+  const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  h.textContent=ok?'✓ Correo válido':'Correo inválido';
+  h.className='hint '+(ok?'ok':'err');
+}
+function chkPwd(){
+  const p=document.getElementById('rPass').value;
+  let s=0;
+  if(p.length>=6)s++;if(p.length>=10)s++;
+  if(/[A-Z]/.test(p)&&/[0-9]/.test(p))s++;
+  if(/[^A-Za-z0-9]/.test(p))s++;
+  const cols=['var(--red)','var(--amber)','var(--amber)','var(--emerald)'];
+  const labs=['Muy débil','Débil','Moderada','Fuerte'];
+  for(let i=1;i<=4;i++)document.getElementById('pb'+i).style.background=i<=s?cols[Math.max(0,s-1)]:'var(--border)';
+  const lbl=document.getElementById('pwLbl');
+  lbl.textContent=p?(labs[Math.max(0,s-1)]||'Muy débil'):'Ingresa una contraseña';
+  lbl.style.color=p?(s>=3?'var(--emerald)':s>=2?'var(--amber)':'var(--red)'):'var(--txt3)';
+}
+
+/* ═══════ REGISTRO ═══════ */
+function doRegister(){
+  const nom=document.getElementById('rNom').value.trim();
+  const email=document.getElementById('rMail').value.trim().toLowerCase();
+  const carrera=document.getElementById('rCarrera').value.trim();
+  const sem=document.getElementById('rSem').value.trim();
+  const jorn=document.getElementById('rJorn').value;
+  const matStr=document.getElementById('rMaterias').value;
+  const pwd=document.getElementById('rPass').value;
+  const pwd2=document.getElementById('rPass2').value;
+  const terms=document.getElementById('rTerms').checked;
+  if(!nom)return showMsg('msgR','⚠️ Ingresa tu nombre completo.','err');
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return showMsg('msgR','⚠️ Ingresa un correo válido.','err');
+  if(!carrera)return showMsg('msgR','⚠️ Ingresa tu carrera o programa.','err');
+  if(!sem)return showMsg('msgR','⚠️ Ingresa tu semestre.','err');
+  if(!jorn)return showMsg('msgR','⚠️ Selecciona tu jornada.','err');
+  if(pwd.length<6)return showMsg('msgR','⚠️ La contraseña debe tener al menos 6 caracteres.','err');
+  if(pwd!==pwd2)return showMsg('msgR','⚠️ Las contraseñas no coinciden.','err');
+  if(!terms)return showMsg('msgR','⚠️ Debes aceptar los términos de uso.','err');
+  const db=getDB();
+  if(db[email])return showMsg('msgR','⚠️ Ya existe una cuenta con ese correo. Inicia sesión.','err');
+  const materias=matStr.split(',').map(m=>m.trim()).filter(m=>m.length>0);
+  if(!materias.length)materias.push('General');
+  const btn=document.getElementById('btnReg');
+  btn.disabled=true;btn.textContent='Creando cuenta…';
+  setTimeout(()=>{
+    db[email]={nombre:nom,email,carrera,semestre:sem,jornada:jorn,materias,pwd:enc(pwd)};
+    setDB(db);
+    btn.disabled=false;btn.textContent='Crear mi cuenta →';
+    showMsg('msgR','✅ ¡Cuenta creada! Entrando…','ok');
+    setTimeout(()=>launchApp(db[email]),700);
+  },400);
+}
+
+/* ═══════ LOGIN ═══════ */
+function doLogin(){
+  const email=document.getElementById('lMail').value.trim().toLowerCase();
+  const pwd=document.getElementById('lPass').value;
+  if(!email)return showMsg('msgL','⚠️ Ingresa tu correo.','err');
+  if(!pwd)return showMsg('msgL','⚠️ Ingresa tu contraseña.','err');
+  const btn=document.getElementById('btnLogin');
+  btn.disabled=true;btn.textContent='Verificando…';
+  setTimeout(()=>{
+    btn.disabled=false;btn.textContent='Entrar a FocusUP →';
+    const db=getDB();
+    const user=db[email];
+    if(!user)return showMsg('msgL','⚠️ No existe una cuenta con ese correo. Regístrate primero.','err');
+    if(user.pwd!==enc(pwd))return showMsg('msgL','⚠️ Contraseña incorrecta. Intenta de nuevo.','err');
+    launchApp(user);
+  },400);
+}
+
+/* ═══════ LANZAR APP ═══════ */
+function launchApp(user){
+  setSess(user);
+  window.USER=user.email;
+  window.USER_CARRERA=user.carrera||'Estudiante';
+  tareas=JSON.parse(localStorage.getItem(user.email+'_t')||'[]');
+  metas=JSON.parse(localStorage.getItem(user.email+'_m')||'[]');
+  emociones=JSON.parse(localStorage.getItem(user.email+'_e')||'[]');
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('app').style.display='flex';
+  // Materias en modal tareas
+  const sel=document.getElementById('tMateria');
+  if(sel&&user.materias&&user.materias.length)
+    sel.innerHTML=user.materias.map(m=>`<option value="${m}">${m}</option>`).join('');
+  // Materias en perfil
+  const matGrid=document.getElementById('perfilMaterias');
+  if(matGrid&&user.materias){
+    const cc=['rgba(99,102,241','rgba(139,92,246','rgba(245,158,11','rgba(6,182,212','rgba(239,68,68','rgba(16,185,129'];
+    const tc=['#a5b4fc','#c4b5fd','#fcd34d','#67e8f9','#fca5a5','#6ee7b7'];
+    matGrid.innerHTML=user.materias.map((m,i)=>{
+      const c=cc[i%cc.length],t=tc[i%tc.length];
+      return `<div style="background:${c},0.08);border-radius:var(--r2);padding:12px;border:1px solid ${c},0.2);"><div style="font-weight:700;font-size:12.5px;color:${t};margin-bottom:3px;">${m}</div><div style="font-size:11px;color:var(--txt3);">Sem. ${user.semestre||'?'}</div></div>`;
+    }).join('');
+  }
+  // Sidebar
+  const ini=user.nombre.split(' ').map(x=>x[0]||'').join('').toUpperCase().slice(0,2);
+  document.getElementById('sidebarAvatar').textContent=ini;
+  document.getElementById('profileAvatar').textContent=ini;
+  document.getElementById('sidebarName').textContent=user.nombre;
+  document.getElementById('sidebarRole').textContent=(user.carrera||'Estudiante')+' — '+(user.semestre||'?')+'° Sem.';
+  document.getElementById('profileName').textContent=user.nombre;
+  const pcl=document.getElementById('perfilCarreraLabel');
+  if(pcl)pcl.textContent=user.carrera||'Estudiante';
+  document.getElementById('perfNombre').value=user.nombre;
+  document.getElementById('perfCorreo').value=user.email;
+  document.getElementById('chipSemestre').textContent=(user.semestre||'?')+'° Semestre';
+  document.getElementById('chipJornada').textContent=user.jornada||'';
+  const semSel=document.getElementById('perfSemestre');
+  if(semSel){
+    if(!semSel.querySelector(`option[value="${user.semestre}"]`)){
+      const o=document.createElement('option');o.value=user.semestre;o.textContent=user.semestre;semSel.appendChild(o);
+    }
+    semSel.value=user.semestre||'';
+  }
+  document.getElementById('perfJornada').value=user.jornada||'';
+  setDate();renderAll();
+  document.getElementById('topbarAction').style.display='inline-block';
+  showToast('¡Bienvenido/a, '+user.nombre.split(' ')[0]+'! 🎉');
+}
+
+/* ═══════ LOGOUT ═══════ */
+function doLogout(){
+  if(!confirm('¿Cerrar sesión?'))return;
+  setSess(null);window.USER=null;
+  tareas=[];metas=[];emociones=[];
+  document.getElementById('app').style.display='none';
+  document.getElementById('authScreen').style.display='flex';
+  document.getElementById('lMail').value='';
+  document.getElementById('lPass').value='';
+}
+
+/* ═══════ AUTO LOGIN ═══════ */
+(function(){const sess=getSess();if(sess){const db=getDB();if(db[sess.email])launchApp(db[sess.email]);}})();
+</script>
+</body>
+</html>
